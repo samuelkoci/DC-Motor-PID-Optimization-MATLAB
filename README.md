@@ -1,58 +1,55 @@
-# DC-Motor-PID-Optimization-MATLAB
-Automated PID control system for DC Motor speed regulation. This project features a comparative analysis between classical Ziegler–Nichols tuning and Metaheuristic optimization using Genetic Algorithms (GA) to minimize overshoot and settling time.
-# DC Motor Speed Control Optimization using Genetic Algorithms
+# DC Motor Speed Control Optimization: GA vs. Ziegler-Nichols
 
-This project presents a comparative study and implementation of control system techniques for regulating the speed of a DC motor. The primary focus is the optimization of PID controller parameters ($K_p, K_i, K_d$) through both classical methods and Artificial Intelligence-based metaheuristic algorithms.
+This project provides a comprehensive framework for DC Motor speed regulation using **PID Control**, comparing classical engineering methods with **Artificial Intelligence (Genetic Algorithms)**. The goal is to minimize settling time and overshoot through automated metaheuristic optimization.
 
-
+![Project Banner](images/step_response.png) 
 
 ## 📋 Project Overview
+The system uses a high-fidelity Simulink plant model to simulate DC motor dynamics. The core of this project is a comparative study between:
+1. **Ziegler–Nichols (Z-N) Method**: A classic open-loop tuning approach based on step response analysis.
+2. **Genetic Algorithm (GA)**: A global search heuristic that optimizes PID gains ($K_p, K_i, K_d$) by minimizing a custom multi-objective cost function.
 
-The system utilizes a Simulink circuit model (`pid_circuit_dcmotorr.slx`) to simulate the dynamic behavior of a DC motor. To tune the PID controller, two distinct approaches have been implemented:
-1. **Ziegler–Nichols Method**: Based on open-loop step response analysis using the tangent method at the inflection point.
-2. **Genetic Algorithm (GA)**: A global search heuristic used to find optimal gains by minimizing a weighted multi-objective cost function.
+## 🛠️ System Architecture & Files
+The project is structured into functional modules for easy integration and testing:
 
-## 🛠️ File Structure
-
-| File Name | Description |
-| :--- | :--- |
-| `pid_optimizationGA.m` | Main script that configures and executes the Genetic Algorithm. |
-| `pidFitnessGA.m` | Fitness function that evaluates PID performance in Simulink and returns a cost value. |
-| `Zieger_Nichols_Parameter.m` | Estimates PID coefficients based on dead time ($\theta$) and time constant ($\tau$). |
-| `TabelaperKontroll.m` | Extracts performance metrics (Overshoot, Settling Time, Error) after simulation. |
-| `pid_circuit_dcmotorr.slx` | The system plant and controller model in Simulink. |
+| File Name | Category | Description |
+| :--- | :--- | :--- |
+| `pid_circuit_dcmotorr.slx` | **Plant** | The core Simulink model of the DC motor and PID loop. |
+| `pid_optimizationGA.m` | **AI Tuning** | Main script to configure and execute the Genetic Algorithm. |
+| `pidFitnessGA.m` | **AI Tuning** | Fitness function evaluating real-time performance in Simulink. |
+| `Zieger_Nichols_Parameter.m` | **Classical Tuning** | Estimates gains based on Dead Time ($\theta$) and Time Constant ($\tau$). |
+| `TabelaperKontroll.m` | **Analytics** | Extracts performance metrics (Overshoot, Settling Time, Error). |
 
 ## 🧬 Genetic Algorithm (GA) Optimization
+The GA searches for optimal gains within the defined space:
+- **Search Space**: $K_p \in [0, 50]$, $K_i \in [0, 50]$, $K_d \in [0, 10]$.
 
-The algorithm searches for optimal values within the following search space:
-* **Lower Bounds (lb)**: [0, 0, 0]
-* **Upper Bounds (ub)**: [50, 50, 10]
-
-### Fitness Function
-System performance is evaluated by minimizing the cost function $J$:
+### Multi-Objective Fitness Function
+The system evaluates performance by minimizing a weighted cost function $J$:
 $$J = \alpha \cdot Overshoot + \beta \cdot SettlingTime + \gamma \cdot SteadyStateError + Penalty$$
 
-Where the assigned weights are:
-* $\alpha = 0.3$ (Overshoot)
-* $\beta = 0.5$ (Settling Time)
-* $\gamma = 0.2$ (Steady-State Error)
+**Optimization Weights:**
+- **30%** Overshoot ($\alpha = 0.3$)
+- **50%** Settling Time ($\beta = 0.5$)
+- **20%** Steady-State Error ($\gamma = 0.2$)
+- **Penalty**: A high constant ($\lambda = 100$) is applied if settling time exceeds 2 seconds.
 
-
-
-A **Penalty ($\lambda = 100$)** is applied if the settling time exceeds the 2-second design constraint.
+![Optimization Evolution](images/pid_tuning.png)
 
 ## 📉 Classical Analysis (Ziegler–Nichols)
+The `Zieger_Nichols_Parameter.m` script performs numerical analysis on the step response to determine the critical plant characteristics:
+- **$\theta$ (Dead time)**: Estimated via tangent method at the inflection point.
+- **$\tau$ (Time constant)**: Calculated as the duration for the tangent to reach steady-state.
 
-The script `Zieger_Nichols_Parameter.m` performs numerical analysis on the step response to determine:
-* **$\theta$ (Dead time)**: Estimated from the intersection of the tangent line with the time axis.
-* **$\tau$ (Time constant)**: The time taken for the tangent to reach the steady-state value.
-* **P, PI, PID Coefficients**: Automatically calculated using standard Z-N formulas.
+![System Architecture](images/system_architecture.png)
 
+## 🚀 Getting Started
+1. **Requirements**: MATLAB R2022b or later with *Optimization* and *Control System* Toolboxes.
+2. **Setup**: Open the Simulink model `pid_circuit_dcmotorr.slx`.
+3. **Execution**:
+    - Run `pid_optimizationGA.m` for automated AI-based tuning.
+    - Run `Zieger_Nichols_Parameter.m` for the classical baseline.
+4. **Validation**: Use `TabelaperKontroll.m` to generate the comparison table of final performance metrics.
 
-
-## 🚀 How to Use
-1. Ensure MATLAB and Simulink are installed.
-2. Open the Simulink model `pid_circuit_dcmotorr.slx`.
-3. Run `pid_optimizationGA.m` to start the automated GA tuning process.
-4. Run `Zieger_Nichols_Parameter.m` to calculate classical baseline gains for comparison.
-5. Use `TabelaperKontroll.m` to verify the final system characteristics.
+## 📊 Results Summary
+The GA approach consistently yields a more stable response with significantly lower overshoot compared to the Ziegler-Nichols method, demonstrating the power of metaheuristic search in control system design.
