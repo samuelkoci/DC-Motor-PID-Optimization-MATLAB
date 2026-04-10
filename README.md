@@ -49,5 +49,5 @@ As detailed in the research paper, the system's stability was verified through f
 
 ## 🎓 Academic Credit
 This project was developed as part of the "Computer Control" course at the **Polytechnic University of Tirana (FTI)**. 
-**Contributors:** Samuel Koçi, Akim Drasa, Franc Kaja, Klajdi Emini.  
+**Contributors:** Samuel Koçi and classmates.
 **Supervisor:** Prof. Miranda Hariza.
