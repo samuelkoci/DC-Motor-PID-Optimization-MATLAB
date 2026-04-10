@@ -30,12 +30,12 @@ $$J = \alpha \cdot Overshoot + \beta \cdot SettlingTime + \gamma \cdot SteadySta
 - **Settling Time Optimization**: Heavily weighted ($\beta = 0.5$) to ensure rapid system response.
 - **Constraint Handling**: A penalty factor is applied if the system exceeds the 2-second stability threshold.
 
-![Optimization Evolution](images/pid_tuning.png)
+![Optimization Evolution](images/pid_tuning.jpg)
 
 ## 📉 Stability & Frequency Analysis
 As detailed in the research paper, the system's stability was verified through frequency response methods. The **Bode Plot** analysis ensures that the phase and gain margins are sufficient to handle load variations without oscillation.
 
-![System Stability Analysis](images/system_architecture.png)
+![System Stability Analysis](images/system_architecture.jpg)
 
 ## 📂 File Structure
 - `functions/`: Contains the Simulink models (`.slx`) and the GA fitness function.
