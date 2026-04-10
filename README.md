@@ -1,55 +1,53 @@
-# DC Motor Speed Control Optimization: GA vs. Ziegler-Nichols
+# Precision DC Motor Control: PID Tuning, State-Space & Metaheuristic Optimization
 
-This project provides a comprehensive framework for DC Motor speed regulation using **PID Control**, comparing classical engineering methods with **Artificial Intelligence (Genetic Algorithms)**. The goal is to minimize settling time and overshoot through automated metaheuristic optimization.
+This project represents a comprehensive engineering study on the mathematical modeling and automated control of DC motors. It transitions from classical control theory (Ziegler-Nichols) to advanced state-space representations and AI-driven optimization using Genetic Algorithms (GA).
 
-![Project Banner](images/step_response.png) 
+## 🚀 Project Highlights (Based on Research Paper)
+- **Mathematical Modeling**: Derived differential equations for the electrical and mechanical subsystems of a DC motor.
+- **State-Space Representation**: Developed the state-space model to analyze internal system variables.
+- **Advanced PID Features**: Implemented a **Filter Coefficient (N)** in the derivative term to suppress high-frequency noise amplification.
+- **Stability Analysis**: Comprehensive validation using **Bode Diagrams** and **Nyquist Plots** to ensure robust stability margins.
 
-## 📋 Project Overview
-The system uses a high-fidelity Simulink plant model to simulate DC motor dynamics. The core of this project is a comparative study between:
-1. **Ziegler–Nichols (Z-N) Method**: A classic open-loop tuning approach based on step response analysis.
-2. **Genetic Algorithm (GA)**: A global search heuristic that optimizes PID gains ($K_p, K_i, K_d$) by minimizing a custom multi-objective cost function.
+## 🛠️ System Architecture & Methodology
+The project utilizes a high-fidelity plant model developed in MATLAB/Simulink.
 
-## 🛠️ System Architecture & Files
-The project is structured into functional modules for easy integration and testing:
+### 1. Plant Modeling
+We defined the motor dynamics using the following parameters (as derived in the paper):
+- **Electrical**: Resistance ($R$), Inductance ($L$), Back-EMF constant ($K_e$).
+- **Mechanical**: Inertia ($J$), Friction ($b$), Torque constant ($K_t$).
 
-| File Name | Category | Description |
-| :--- | :--- | :--- |
-| `pid_circuit_dcmotorr.slx` | **Plant** | The core Simulink model of the DC motor and PID loop. |
-| `pid_optimizationGA.m` | **AI Tuning** | Main script to configure and execute the Genetic Algorithm. |
-| `pidFitnessGA.m` | **AI Tuning** | Fitness function evaluating real-time performance in Simulink. |
-| `Zieger_Nichols_Parameter.m` | **Classical Tuning** | Estimates gains based on Dead Time ($\theta$) and Time Constant ($\tau$). |
-| `TabelaperKontroll.m` | **Analytics** | Extracts performance metrics (Overshoot, Settling Time, Error). |
+### 2. Control Strategies
+| Method | Description |
+| :--- | :--- |
+| **Ziegler-Nichols** | Open-loop step response analysis using the tangent method at the inflection point. |
+| **Genetic Algorithm (GA)** | Metaheuristic search for optimal $K_p$, $K_i$, $K_d$ by minimizing a multi-objective cost function. |
+| **State-Space Control** | Analysis of the system through state variables for more complex control requirements. |
 
-## 🧬 Genetic Algorithm (GA) Optimization
-The GA searches for optimal gains within the defined space:
-- **Search Space**: $K_p \in [0, 50]$, $K_i \in [0, 50]$, $K_d \in [0, 10]$.
-
-### Multi-Objective Fitness Function
-The system evaluates performance by minimizing a weighted cost function $J$:
+## 🧬 Genetic Algorithm (GA) Details
+The optimization process targets the minimization of a weighted cost function $J$ to achieve a balance between speed and stability:
 $$J = \alpha \cdot Overshoot + \beta \cdot SettlingTime + \gamma \cdot SteadyStateError + Penalty$$
 
-**Optimization Weights:**
-- **30%** Overshoot ($\alpha = 0.3$)
-- **50%** Settling Time ($\beta = 0.5$)
-- **20%** Steady-State Error ($\gamma = 0.2$)
-- **Penalty**: A high constant ($\lambda = 100$) is applied if settling time exceeds 2 seconds.
+- **Settling Time Optimization**: Heavily weighted ($\beta = 0.5$) to ensure rapid system response.
+- **Constraint Handling**: A penalty factor is applied if the system exceeds the 2-second stability threshold.
 
 ![Optimization Evolution](images/pid_tuning.png)
 
-## 📉 Classical Analysis (Ziegler–Nichols)
-The `Zieger_Nichols_Parameter.m` script performs numerical analysis on the step response to determine the critical plant characteristics:
-- **$\theta$ (Dead time)**: Estimated via tangent method at the inflection point.
-- **$\tau$ (Time constant)**: Calculated as the duration for the tangent to reach steady-state.
+## 📉 Stability & Frequency Analysis
+As detailed in the research paper, the system's stability was verified through frequency response methods. The **Bode Plot** analysis ensures that the phase and gain margins are sufficient to handle load variations without oscillation.
 
-![System Architecture](images/system_architecture.png)
+![System Stability Analysis](images/system_architecture.png)
 
-## 🚀 Getting Started
-1. **Requirements**: MATLAB R2022b or later with *Optimization* and *Control System* Toolboxes.
-2. **Setup**: Open the Simulink model `pid_circuit_dcmotorr.slx`.
-3. **Execution**:
-    - Run `pid_optimizationGA.m` for automated AI-based tuning.
-    - Run `Zieger_Nichols_Parameter.m` for the classical baseline.
-4. **Validation**: Use `TabelaperKontroll.m` to generate the comparison table of final performance metrics.
+## 📂 File Structure
+- `functions/`: Contains the Simulink models (`.slx`) and the GA fitness function.
+- `scripts/`: MATLAB scripts for Z-N parameters and performance extraction.
+- `docs/`: (Recommended) Place the `komandim det kursi.docx` or a PDF version here for full theoretical reference.
 
-## 📊 Results Summary
-The GA approach consistently yields a more stable response with significantly lower overshoot compared to the Ziegler-Nichols method, demonstrating the power of metaheuristic search in control system design.
+## 🚀 How to Run
+1. Open MATLAB and add the project folders to your path.
+2. Run `pid_optimizationGA.m` to execute the AI-driven tuning.
+3. Observe the output in the **Scope** block of the Simulink model for real-time visualization of the speed regulation.
+
+## 🎓 Academic Credit
+This project was developed as part of the "Computer Control" course at the **Polytechnic University of Tirana (FTI)**. 
+**Contributors:** Samuel Koçi, Akim Drasa, Franc Kaja, Klajdi Emini.  
+**Supervisor:** Prof. Miranda Hariza.
